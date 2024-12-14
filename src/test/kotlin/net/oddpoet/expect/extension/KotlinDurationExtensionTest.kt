@@ -2,22 +2,12 @@ package net.oddpoet.expect.extension
 
 import net.oddpoet.expect.should
 import org.junit.jupiter.api.Test
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
-@OptIn(kotlin.time.ExperimentalTime::class)
 class KotlinDurationExtensionTest {
-    val Int.milliseconds: Duration
-        get() = Duration.milliseconds(this.toLong())
-
-    val Int.seconds: Duration
-        get() = Duration.seconds(this.toLong())
-
-    val Int.minutes: Duration
-        get() = Duration.minutes(this.toLong())
-
-    val Int.hours: Duration
-        get() = Duration.hours(this.toLong())
-
 
     @Test
     fun `test beGreaterThan`() {

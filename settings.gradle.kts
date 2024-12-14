@@ -3,56 +3,54 @@ rootProject.name = "kotlin-expect"
 /**
  * gradle plugin management.
  *
- * version 정보는 `gradle.properties`에서 관리.
  */
-pluginManagement {
-    val kotlinVersion: String by settings
-    val nexusPublishPluginVersion: String by settings
-
-    plugins {
-        // kotlin
-        kotlin("jvm") version kotlinVersion
-
-        // publish
-        id("io.github.gradle-nexus.publish-plugin") version nexusPublishPluginVersion
-        id("maven-publish")
-    }
-}
 
 buildscript {
     repositories {
         mavenCentral()
     }
 }
-
-
-// ref: https://docs.gradle.org/current/userguide/platforms.html
-enableFeaturePreview("VERSION_CATALOGS")
+// version catalog
 dependencyResolutionManagement {
     versionCatalogs {
+
         create("libs") {
+            version("kotlin", "1.9.23")
+            version("gradle-nexus-publish-plugin", "1.1.0")
             version("slf4j", "1.7.36")
             version("logback", "1.2.11")
-            version("junit5", "5.8.2")
-            version("jacoco-tool", "0.8.7")
+            version("junit5", "5.9.3")
+            version("junit5-platform", "1.9.3")
+            version("jacoco-tool", "0.8.12")
 
-            alias("slf4j-api")
-                .to("org.slf4j", "slf4j-api")
+            // plugins
+            plugin("kotlin.jvm", "org.jetbrains.kotlin.jvm")
+                .versionRef("kotlin")
+
+            plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin")
+                .versionRef("gradle-nexus-publish-plugin")
+
+            // libraries
+            library("slf4j-api", "org.slf4j", "slf4j-api")
                 .versionRef("slf4j")
-            alias("logback-classic")
-                .to("ch.qos.logback", "logback-classic")
+
+            library("logback-classic", "ch.qos.logback", "logback-classic")
                 .versionRef("logback")
 
-            alias("junit5-api")
-                .to("org.junit.jupiter", "junit-jupiter-api")
-                .versionRef("junit5")
-            alias("junit5-params")
-                .to("org.junit.jupiter", "junit-jupiter-params")
+            library("junit5-all", "org.junit.jupiter", "junit-jupiter")
                 .versionRef("junit5")
 
-            alias("junit5-engine")
-                .to("org.junit.jupiter", "junit-jupiter-engine")
+            library("junit5-api", "org.junit.jupiter", "junit-jupiter-api")
                 .versionRef("junit5")
+
+            library("junit5-params", "org.junit.jupiter", "junit-jupiter-params")
+                .versionRef("junit5")
+
+            library("junit5-engine", "org.junit.jupiter", "junit-jupiter-engine")
+                .versionRef("junit5")
+
+            library("junit5-platform-launcher", "org.junit.platform", "junit-platform-launcher")
+                .versionRef("junit5-platform")
         }
     }
 }

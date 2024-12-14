@@ -1,15 +1,18 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
     `java-library`
-    kotlin("jvm")
-    id("maven-publish")
-    id("io.github.gradle-nexus.publish-plugin")
+    `maven-publish`
     jacoco
     idea
     signing
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.nexus.publish)
 }
 
-group = "net.oddpoet"
-version = "1.3.2"
+group = "io.github.steamfunc"
+version = findProperty("project.version") as String
 description = "rspec style assertion library for kotlin test"
 
 repositories {
@@ -26,38 +29,30 @@ dependencies {
     testRuntimeOnly(kotlin("reflect"))
     testApi(kotlin("test"))
     testApi(kotlin("test-junit5"))
-    testApi(libs.junit5.api)
+    testApi(libs.junit5.all)
     testApi(libs.junit5.params)
-    testRuntimeOnly(libs.junit5.engine)
+    testRuntimeOnly(libs.junit5.platform.launcher)
     testRuntimeOnly(libs.logback.classic)
 }
 
 java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
 }
 
+kotlin {
+//    explicitApi()
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+        apiVersion.set(KotlinVersion.KOTLIN_1_9)
+        languageVersion.set(KotlinVersion.KOTLIN_1_9)
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
+    }
+}
+
 tasks {
-    compileKotlin {
-        kotlinOptions {
-            apiVersion = "1.5"
-            languageVersion = "1.5"
-            jvmTarget = "1.8"
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-    compileTestKotlin {
-        kotlinOptions {
-            apiVersion = "1.5"
-            languageVersion = "1.5"
-            jvmTarget = "1.8"
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-    configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
     test {
         useJUnitPlatform()
         testLogging {
@@ -69,8 +64,10 @@ tasks {
     }
     jacocoTestReport {
         reports {
+            html.required.set(true)
+            html.outputLocation.set(layout.buildDirectory.dir("jacoco/coverage/"))
             xml.required.set(true)
-            xml.outputLocation.set(file("$buildDir/jacoco/report.xml"))
+            xml.outputLocation.set(layout.buildDirectory.file("jacoco/coverage.xml"))
         }
     }
     withType<Test> {
