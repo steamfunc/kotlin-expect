@@ -1,6 +1,6 @@
 # kotlin-expect
 
-[![Build Status](https://travis-ci.org/odd-poet/kotlin-expect.svg?branch=master)](https://travis-ci.org/odd-poet/kotlin-expect)[![codecov](https://codecov.io/gh/odd-poet/kotlin-expect/branch/master/graph/badge.svg)](https://codecov.io/gh/odd-poet/kotlin-expect)
+[![codecov](https://codecov.io/github/steamfunc/kotlin-expect/branch/develop/graph/badge.svg?token=C20OB3IIBC)](https://codecov.io/github/steamfunc/kotlin-expect)
 
 `kotlin-expect` is a assertion library for kotlin test. it's inspried by [Rspec Expectation].
 
