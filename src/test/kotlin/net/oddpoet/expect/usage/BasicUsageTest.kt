@@ -101,11 +101,11 @@ class BasicUsageTest {
 
     @Test
     fun `expect(subj) {} could not use for null`() {
-        expect {
+        expectThrows<AssertionError> {
             expect(null) {
                 it.should.beNull()
             }
-        }.throws()
+        }
     }
 
     @Test

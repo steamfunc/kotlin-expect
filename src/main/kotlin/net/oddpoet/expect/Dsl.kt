@@ -49,7 +49,7 @@ fun <T : Any> expect(subject: T?, clause: (T) -> Unit) {
         callsInPlace(clause, InvocationKind.EXACTLY_ONCE)
     }
     if (subject == null) {
-        throw RuntimeException("Cannot execute expect clause for null.")
+        throw AssertionError("Cannot execute expect clause for null.")
     }
     clause(subject)
 }
