@@ -45,12 +45,14 @@ jobs:
 
       # 5. 코드 커버리지 업로드 (Codecov 사용)
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
+          slug: ${{ github.repository }} # GitHub 저장소 이름
           files: build/jacoco/coverage.xml # JaCoCo XML 경로
           token: ${{ secrets.CODECOV_TOKEN }} # Codecov 토큰 (Codecov 프로젝트에서 생성)
           flags: unittests
           name: codecov-coverage
+
 
       # 6. HTML 보고서 저장
       - name: Upload coverage HTML report
