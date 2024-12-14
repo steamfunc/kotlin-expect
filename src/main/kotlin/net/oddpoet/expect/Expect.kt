@@ -30,7 +30,7 @@ internal constructor(
      */
     fun satisfy(predicate: T.() -> Boolean) {
         satisfyThatForNullable("satisfy given predicate <$predicate>") {
-            it?.predicate() ?: false
+            it?.predicate() == true
         }
     }
 
@@ -41,7 +41,7 @@ internal constructor(
      */
     fun satisfyThat(description: String, predicate: (T) -> Boolean) {
         satisfyThatForNullable(description) { subj ->
-            subj?.let { predicate(it) } ?: false
+            subj?.let { predicate(it) } == true
         }
     }
 

@@ -38,10 +38,10 @@ internal constructor(block: () -> Unit) {
             throw AssertionError("expected to occur a exception<$exceptionClass> but no exception was thrown.")
         }
         if (!exceptionClass.isInstance(thrown)) {
-            log.debug("${thrown.literal} has been thrown, but expected <$exceptionClass> : FAIL")
+            log.debug("{} has been thrown, but expected <{}> : FAIL", thrown.literal, exceptionClass)
             throw AssertionError("expected <$exceptionClass> to be thrown, but <${thrown::class}> was thrown.", thrown)
         }
-        log.debug("${thrown.literal} has been thrown (expected:<$exceptionClass>) : OK")
+        log.debug("{} has been thrown (expected:<{}>) : OK", thrown.literal, exceptionClass)
         @Suppress("UNCHECKED_CAST")
         clause(thrown as T)
     }
