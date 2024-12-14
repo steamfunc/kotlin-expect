@@ -9,6 +9,7 @@ import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.nio.file.NoSuchFileException
+import kotlin.time.Duration.Companion.milliseconds
 
 
 class BasicUsageTest {
@@ -105,6 +106,31 @@ class BasicUsageTest {
                 it.should.beNull()
             }
         }.throws()
+    }
+
+    @Test
+    fun `test expect {} elapsedWithin`() {
+        expect {
+            Thread.sleep(10)
+        }.elapsedWithin(10.milliseconds, 100.milliseconds)
+    }
+
+    @Test
+    fun `failing test expect {} elapsedWithin`() {
+        expect {
+            expect {
+                Thread.sleep(10)
+            }.elapsedWithin(1.milliseconds, 9.milliseconds)
+        }.throws<AssertionError>()
+    }
+
+    @Test
+    fun `test expect {} throws elapsedWithin`() {
+        expect {
+            Thread.sleep(10)
+            throw IOException()
+        }.throws<IOException>()
+            .elapsedWithin(10.milliseconds, 100.milliseconds)
     }
 
     @Test

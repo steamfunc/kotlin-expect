@@ -23,6 +23,7 @@ fun expect(block: () -> Unit): ErrorExpectation {
  * expect exception while executing code block (another version)
  */
 @Stability.Stable
+@Suppress("WRONG_INVOCATION_KIND", "LEAKED_IN_PLACE_LAMBDA")
 @OptIn(ExperimentalContracts::class)
 inline fun <reified T : Throwable> expectThrows(noinline block: () -> Unit) {
     contract {

@@ -2,7 +2,10 @@ package net.oddpoet.expect
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.Duration
+import java.time.Instant
 import kotlin.reflect.KClass
+import kotlin.time.toJavaDuration
 
 /**
  * Expectation of error.
@@ -13,14 +16,43 @@ import kotlin.reflect.KClass
  */
 class ErrorExpectation
 internal constructor(block: () -> Unit) {
+    private val log: Logger = LoggerFactory.getLogger(this.javaClass)
+    private val startedAt = Instant.now()
+    private var finishedAt: Instant
+
     // execute and catch
     private val thrown: Throwable? = try {
         block()
         null
     } catch (e: Throwable) {
         e
+    } finally {
+        finishedAt = Instant.now()
     }
-    private val log: Logger = LoggerFactory.getLogger(this.javaClass)
+
+    private val elapsedTime = lazy { Duration.between(startedAt, finishedAt) }
+
+    fun elapsedWithin(lower: Duration, upper: Duration) = apply {
+        require(lower <= upper) { "lower bound should be less than or equal to upper bound" }
+        if (elapsedTime.value !in lower..upper) {
+            log.debug("elapsed time is {} but expected range is {} ~ {} : FAIL", elapsedTime.value, lower, upper)
+            throw AssertionError("elapsed time is ${elapsedTime.value} but expected range is $lower ~ $upper")
+        }
+    }
+
+    fun elapsedWithin(range: ClosedRange<Duration>) = apply {
+        elapsedWithin(range.start, range.endInclusive)
+    }
+
+    @JvmName("elapsedWithinKotlinDuration")
+    fun elapsedWithin(lower: kotlin.time.Duration, upper: kotlin.time.Duration) = apply {
+        elapsedWithin(lower.toJavaDuration(), upper.toJavaDuration())
+    }
+
+    @JvmName("elapsedWithinKotlinDuration")
+    fun elapsedWithin(range: ClosedRange<kotlin.time.Duration>) = apply {
+        elapsedWithin(range.start.toJavaDuration(), range.endInclusive.toJavaDuration())
+    }
 
     /**
      * Test type of exception.
@@ -32,7 +64,7 @@ internal constructor(block: () -> Unit) {
     fun <T : Throwable> throws(
         exceptionClass: KClass<out T>,
         clause: (T) -> Unit = {},
-    ) {
+    ) = apply {
         if (thrown == null) {
             log.debug("No exception had been thrown : FAIL")
             throw AssertionError("expected to occur a exception<$exceptionClass> but no exception was thrown.")
@@ -51,7 +83,7 @@ internal constructor(block: () -> Unit) {
      * reified version.
      */
     @JvmName("reifiedThrows")
-    inline fun <reified T : Throwable> throws(noinline clause: (T) -> Unit = {}) {
+    inline fun <reified T : Throwable> throws(noinline clause: (T) -> Unit = {}) = apply {
         throws(T::class, clause)
     }
 
@@ -59,7 +91,7 @@ internal constructor(block: () -> Unit) {
      * short-cut method.
      *
      */
-    fun throws(clause: (Exception) -> Unit = {}) {
+    fun throws(clause: (Exception) -> Unit = {}) = apply{
         throws(Exception::class, clause)
     }
 
