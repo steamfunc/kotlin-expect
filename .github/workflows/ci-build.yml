@@ -39,15 +39,11 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      # 4. Verify Gradle wrapper
-      - name: Verify Gradle Wrapper
-        run: ./gradlew wrapper --gradle-version # Gradle wrapper 유효성 검사
-
-      # 5. Run Gradle build
+      # 4. Run Gradle build
       - name: Run Gradle Build
         run: ./gradlew clean test # Gradle 빌드 실행
 
-      # 6. 코드 커버리지 업로드 (Codecov 사용)
+      # 5. 코드 커버리지 업로드 (Codecov 사용)
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -56,7 +52,7 @@ jobs:
           flags: unittests
           name: codecov-coverage
 
-      # 6. HTML 보고서 저장 (선택 사항)
+      # 6. HTML 보고서 저장
       - name: Upload coverage HTML report
         if: always()
         uses: actions/upload-artifact@v3
