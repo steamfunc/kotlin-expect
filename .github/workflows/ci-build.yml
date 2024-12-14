@@ -61,3 +61,21 @@ jobs:
         with:
           name: coverage-report
           path: build/jacoco/coverage
+
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'java, kotlin' # 분석할 언어 선택
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
