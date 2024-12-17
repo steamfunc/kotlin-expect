@@ -7,12 +7,12 @@ import io.github.steamfunc.Expect
  * @author Yunsang Choi
  */
 
-fun Expect<Boolean>.beTrue() =
-        satisfyThat("be true") {
-            it
-        }
+public fun Expect<Boolean>.beTrue(): Unit =
+    satisfyThat("be true") {
+        it
+    }
 
-fun Expect<Boolean>.beFalse() =
-        satisfyThat("be false") {
-            !it
-        }
+public fun Expect<Boolean>.beFalse(): Unit =
+    satisfyThat("be false") {
+        !it
+    }

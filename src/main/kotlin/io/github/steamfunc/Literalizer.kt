@@ -15,10 +15,10 @@ import kotlin.reflect.KClass
  *
  * @author Yunsang Choi
  */
-fun interface Literalizer<T> {
-    fun literal(value: T): String
+public fun interface Literalizer<T> {
+    public fun literal(value: T): String
 
-    companion object Registry {
+    public companion object Registry {
         private val list = mutableListOf<TypedLiteralizer<*>>()
 
         init {
@@ -56,7 +56,7 @@ fun interface Literalizer<T> {
             register<Date> { "Date<$it>" }
         }
 
-        fun literal(value: Any?): String {
+        public fun literal(value: Any?): String {
             return value?.let {
                 list.firstOrNull { it.type.isInstance(value) }
                     ?.literal(value)
@@ -64,11 +64,11 @@ fun interface Literalizer<T> {
             } ?: "null"
         }
 
-        fun <T : Any> register(type: KClass<T>, literalizer: Literalizer<T>) {
+        public fun <T : Any> register(type: KClass<T>, literalizer: Literalizer<T>) {
             list.add(TypedLiteralizer(type, literalizer))
         }
 
-        inline fun <reified T : Any> register(crossinline block: (T) -> String) {
+        public inline fun <reified T : Any> register(crossinline block: (T) -> String) {
             register(T::class, { block(it) })
         }
 

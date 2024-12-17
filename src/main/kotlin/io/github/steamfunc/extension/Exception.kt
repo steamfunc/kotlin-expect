@@ -9,17 +9,17 @@ import kotlin.reflect.KClass
  * @author Yunsang Choi
  */
 
-fun <T : Throwable> Expect<T>.haveMessage(expectMessage: String?) =
+public fun <T : Throwable> Expect<T>.haveMessage(expectMessage: String?): Unit =
     satisfyThat("has message of ${expectMessage.literal}") {
         it.message.asTestProp("message") == expectMessage
     }
 
-fun <T : Throwable> Expect<T>.haveNoMessage() =
+public fun <T : Throwable> Expect<T>.haveNoMessage(): Unit =
     satisfyThat("has no message") {
         it.message.asTestProp("message") == null
     }
 
-fun <T : Throwable, C : Throwable> Expect<T>.haveCause(cause: KClass<C>) =
+public fun <T : Throwable, C : Throwable> Expect<T>.haveCause(cause: KClass<C>): Unit =
     satisfyThat("has cause of ${cause.literal}") {
         it.cause.asTestProp("cause")
         sequence {

@@ -9,33 +9,33 @@ import kotlin.reflect.KClass
  * @author Yunsang Choi
  */
 
-infix fun <T : Any> Expect<T>.beSameInstance(value: Any?) =
+public infix fun <T : Any> Expect<T>.beSameInstance(value: Any?): Unit =
     satisfyThatForNullable("be same instance of <${value.literal}>") {
         it === value
     }
 
-infix fun <T : Any> Expect<T>.be(value: T?) =
+public infix fun <T : Any> Expect<T>.be(value: T?): Unit =
     satisfyThatForNullable("be <${value.literal}>") {
         it == value
     }
 
-infix fun <T : Any> Expect<T>.equal(value: Any?) =
+public infix fun <T : Any> Expect<T>.equal(value: Any?): Unit =
     satisfyThatForNullable("equal <${value.literal}>") {
         it == value
     }
 
-fun <T : Any> Expect<T>.beNull() {
+public fun <T : Any> Expect<T>.beNull() {
     satisfyThatForNullable("be null") {
         it == null
     }
 }
 
-infix fun <T : Any> Expect<T>.beInstanceOf(type: KClass<*>) =
+public infix fun <T : Any> Expect<T>.beInstanceOf(type: KClass<*>): Unit =
     satisfyThatForNullable("be instance of <${type.literal}>") {
         type.isInstance(it)
     }
 
-inline fun <reified S : Any> Expect<*>.beInstanceOf() =
+public inline fun <reified S : Any> Expect<*>.beInstanceOf(): Unit =
     satisfyThatForNullable("be instance of <${S::class.literal}>") {
         S::class.isInstance(it)
     }

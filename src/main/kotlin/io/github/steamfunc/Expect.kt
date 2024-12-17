@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  *
  * @author Yunsang Choi
  */
-class Expect<T : Any>
+public class Expect<T : Any>
 internal constructor(
     internal val subject: T?,
     internal val negative: Boolean = false,
@@ -19,7 +19,7 @@ internal constructor(
         true -> "should not"
         false -> "should"
     }
-    val not: Expect<T> by lazy { Expect(subject, !negative) }
+    public val not: Expect<T> by lazy { Expect(subject, !negative) }
     private val log = LoggerFactory.getLogger(this.javaClass)
 
 
@@ -28,7 +28,7 @@ internal constructor(
      *
      * if subject is null, it will throw assertError.
      */
-    fun satisfy(predicate: T.() -> Boolean) {
+    public fun satisfy(predicate: T.() -> Boolean) {
         satisfyThatForNullable("satisfy given predicate <$predicate>") {
             it?.predicate() == true
         }
@@ -39,7 +39,7 @@ internal constructor(
      *
      * use it to define your expect vocabulary.
      */
-    fun satisfyThat(description: String, predicate: (T) -> Boolean) {
+    public fun satisfyThat(description: String, predicate: (T) -> Boolean) {
         satisfyThatForNullable(description) { subj ->
             subj?.let { predicate(it) } == true
         }
@@ -49,7 +49,7 @@ internal constructor(
      * same as `satisfyThat`.
      * but it could be test nullable.
      */
-    fun satisfyThatForNullable(description: String, predicate: (T?) -> Boolean) {
+    public fun satisfyThatForNullable(description: String, predicate: (T?) -> Boolean) {
         initTestProp()
         if (predicate(subject) == negative) {
             log.debug("$subjectAsText $verb $description : FAIL")
@@ -74,7 +74,7 @@ internal constructor(
     }
 
     @Stability.Experimental
-    fun <X : Any?> X.asTestProp(name: String): X {
+    public fun <X : Any?> X.asTestProp(name: String): X {
         testProp = Prop(name, this)
         return this
     }
@@ -93,7 +93,7 @@ internal constructor(
         }
 
     // Expect class scoped extension (for print object in assertion message)
-    val <X : Any?> X.literal: String
+    public val <X : Any?> X.literal: String
         get() = Literalizer.literal(this)
 
     @Suppress("POTENTIALLY_NON_REPORTED_ANNOTATION")

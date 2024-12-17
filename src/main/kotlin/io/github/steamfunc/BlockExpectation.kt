@@ -14,7 +14,7 @@ import kotlin.time.toJavaDuration
  *
  * @author Yunsang Choi
  */
-class BlockExpectation
+public class BlockExpectation
 internal constructor(block: () -> Unit) {
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
     private val startedAt = Instant.now()
@@ -32,7 +32,7 @@ internal constructor(block: () -> Unit) {
 
     private val elapsedTime = lazy { Duration.between(startedAt, finishedAt) }
 
-    fun elapsedWithin(lower: Duration, upper: Duration) = apply {
+    public fun elapsedWithin(lower: Duration, upper: Duration): BlockExpectation = apply {
         require(lower <= upper) { "lower bound should be less than or equal to upper bound" }
         if (elapsedTime.value !in lower..upper) {
             log.debug("elapsed time is {} but expected range is {} ~ {} : FAIL", elapsedTime.value, lower, upper)
@@ -40,17 +40,17 @@ internal constructor(block: () -> Unit) {
         }
     }
 
-    fun elapsedWithin(range: ClosedRange<Duration>) = apply {
+    public fun elapsedWithin(range: ClosedRange<Duration>): BlockExpectation = apply {
         elapsedWithin(range.start, range.endInclusive)
     }
 
     @JvmName("elapsedWithinKotlinDuration")
-    fun elapsedWithin(lower: kotlin.time.Duration, upper: kotlin.time.Duration) = apply {
+    public fun elapsedWithin(lower: kotlin.time.Duration, upper: kotlin.time.Duration): BlockExpectation = apply {
         elapsedWithin(lower.toJavaDuration(), upper.toJavaDuration())
     }
 
     @JvmName("elapsedWithinKotlinDuration")
-    fun elapsedWithin(range: ClosedRange<kotlin.time.Duration>) = apply {
+    public fun elapsedWithin(range: ClosedRange<kotlin.time.Duration>): BlockExpectation = apply {
         elapsedWithin(range.start.toJavaDuration(), range.endInclusive.toJavaDuration())
     }
 
@@ -61,10 +61,10 @@ internal constructor(block: () -> Unit) {
      * if not, it will throw AssertionError.
      *
      */
-    fun <T : Throwable> throws(
+    public fun <T : Throwable> throws(
         exceptionClass: KClass<out T>,
         clause: (T) -> Unit = {},
-    ) = apply {
+    ): BlockExpectation = apply {
         if (thrown == null) {
             log.debug("No exception had been thrown : FAIL")
             throw AssertionError("expected to occur a exception<$exceptionClass> but no exception was thrown.")
@@ -83,7 +83,7 @@ internal constructor(block: () -> Unit) {
      * reified version.
      */
     @JvmName("reifiedThrows")
-    inline fun <reified T : Throwable> throws(noinline clause: (T) -> Unit = {}) = apply {
+    public inline fun <reified T : Throwable> throws(noinline clause: (T) -> Unit = {}): BlockExpectation = apply {
         throws(T::class, clause)
     }
 
@@ -91,7 +91,7 @@ internal constructor(block: () -> Unit) {
      * short-cut method.
      *
      */
-    fun throws(clause: (Exception) -> Unit = {}) = apply {
+    public fun throws(clause: (Exception) -> Unit = {}): BlockExpectation = apply {
         throws(Exception::class, clause)
     }
 

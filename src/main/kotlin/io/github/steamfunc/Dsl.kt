@@ -15,7 +15,7 @@ import kotlin.contracts.contract
  * expect exception while executing code block
  */
 @Stability.Stable
-fun expect(block: () -> Unit): BlockExpectation {
+public fun expect(block: () -> Unit): BlockExpectation {
     return BlockExpectation(block)
 }
 
@@ -25,7 +25,7 @@ fun expect(block: () -> Unit): BlockExpectation {
 @Stability.Stable
 @Suppress("WRONG_INVOCATION_KIND", "LEAKED_IN_PLACE_LAMBDA")
 @OptIn(ExperimentalContracts::class)
-inline fun <reified T : Throwable> expectThrows(noinline block: () -> Unit) {
+public inline fun <reified T : Throwable> expectThrows(noinline block: () -> Unit) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
@@ -36,14 +36,14 @@ inline fun <reified T : Throwable> expectThrows(noinline block: () -> Unit) {
  * expect subject to...
  */
 @Stability.Stable
-fun <T : Any> expect(subject: T?) = Expectation(subject)
+public fun <T : Any> expect(subject: T?): Expectation<T> = Expectation(subject)
 
 /**
  * expect subject that ...
  */
 @Stability.Stable
 @OptIn(ExperimentalContracts::class)
-fun <T : Any> expect(subject: T?, clause: (T) -> Unit) {
+public fun <T : Any> expect(subject: T?, clause: (T) -> Unit) {
     contract {
         returns() implies (subject != null)
         callsInPlace(clause, InvocationKind.EXACTLY_ONCE)
@@ -59,6 +59,6 @@ fun <T : Any> expect(subject: T?, clause: (T) -> Unit) {
  *
  */
 @Stability.Stable
-val <T : Any> T?.should: Expect<T>
+public val <T : Any> T?.should: Expect<T>
     get() = Expect(this)
 

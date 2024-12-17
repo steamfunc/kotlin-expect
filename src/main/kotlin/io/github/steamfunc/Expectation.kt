@@ -5,8 +5,8 @@ package io.github.steamfunc
  *
  * @author Yunsang Choi
  */
-class Expectation<T : Any>
+public class Expectation<T : Any>
 internal constructor(subject: T?) {
-    val to: Expect<T> by lazy { Expect(subject) }
+    public val to: Expect<T> by lazy { Expect(subject) }
 }
 

@@ -11,32 +11,32 @@ import java.util.*
  * @author Yunsang Choi
  */
 
-fun Expect<Instant>.beBefore(other: Instant) =
+public fun Expect<Instant>.beBefore(other: Instant): Unit =
     satisfyThat("be before ${other.literal}") {
         it.isBefore(other)
     }
 
-fun Expect<Instant>.beBefore(other: Date) =
+public fun Expect<Instant>.beBefore(other: Date): Unit =
     satisfyThat("be before ${other.literal}") {
         it.isBefore(other.toInstant())
     }
 
-fun Expect<Instant>.beAfter(other: Instant) =
+public fun Expect<Instant>.beAfter(other: Instant): Unit =
     satisfyThat("be after ${other.literal}") {
         it.isAfter(other)
     }
 
-fun Expect<Instant>.beAfter(other: Date) =
+public fun Expect<Instant>.beAfter(other: Date): Unit =
     satisfyThat("be after ${other.literal}") {
         it.isAfter(other.toInstant())
     }
 
-fun Expect<Instant>.beIn(range: ClosedRange<Instant>) =
+public fun Expect<Instant>.beIn(range: ClosedRange<Instant>): Unit =
     satisfyThat("be in the range of ${range.literal}") {
         it in range
     }
 
-fun Expect<Instant>.beApproximatedTo(other: Instant, marginOfError: TemporalAmount) =
+public fun Expect<Instant>.beApproximatedTo(other: Instant, marginOfError: TemporalAmount): Unit =
     satisfyThat("be approximated to ${other.literal} within ${marginOfError.literal}") {
         it in (other.minus(marginOfError)..other.plus(marginOfError))
     }

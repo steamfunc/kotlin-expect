@@ -10,35 +10,35 @@ import java.util.*
  */
 
 
-fun Expect<ByteArray>.contain(item: Byte) =
+public fun Expect<ByteArray>.contain(item: Byte): Unit =
     satisfyThat("contain <${item.literal}>") {
         it.contains(item)
     }
 
-fun Expect<ByteArray>.be(other: ByteArray) =
+public fun Expect<ByteArray>.be(other: ByteArray): Unit =
     satisfyThat("be <${other.literal}>") {
         it.contentEquals(other)
     }
 
 // alias for `be`
-fun Expect<ByteArray>.beSameContentOf(other: ByteArray) = this.be(other)
+public fun Expect<ByteArray>.beSameContentOf(other: ByteArray): Unit = this.be(other)
 
-fun Expect<ByteArray>.haveSizeOf(size: Int) =
+public fun Expect<ByteArray>.haveSizeOf(size: Int): Unit =
     satisfyThat("have size of <${size.literal}>") {
         it.size == size
     }
 
-fun Expect<ByteArray>.beEmpty() =
+public fun Expect<ByteArray>.beEmpty(): Unit =
     satisfyThat("be empty") {
         it.isEmpty()
     }
 
-fun Expect<ByteArray>.beEncodedBase64(base64: String) =
+public fun Expect<ByteArray>.beEncodedBase64(base64: String): Unit =
     satisfyThat("be as base64") {
         Base64.getEncoder().encodeToString(it) == base64
     }
 
-fun Expect<ByteArray>.beAsHex(hexBin: String) =
+public fun Expect<ByteArray>.beAsHex(hexBin: String): Unit =
     satisfyThat("be as HEX '${hexBin.literal}'") {
         val hex = it.joinToString("") { String.format("%02X", it) }
         hex.equals(hexBin, ignoreCase = true)

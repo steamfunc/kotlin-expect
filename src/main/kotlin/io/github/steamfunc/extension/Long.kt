@@ -7,36 +7,36 @@ import io.github.steamfunc.Expect
  *
  * @author Yunsang Choi
  */
-fun Expect<Long>.beGreaterThan(other: Long) =
-        satisfyThat("be greater than ${other.literal}") {
-            it > other
-        }
+public fun Expect<Long>.beGreaterThan(other: Long): Unit =
+    satisfyThat("be greater than ${other.literal}") {
+        it > other
+    }
 
-fun Expect<Long>.beGreaterThanOrEqualTo(other: Long) =
-        satisfyThat("be greater than or equal to ${other.literal}") {
-            it >= other
-        }
-
-
-fun Expect<Long>.beLessThan(other: Long) =
-        satisfyThat("be less than ${other.literal}") {
-            it < other
-        }
-
-fun Expect<Long>.beLessThanOrEqualTo(other: Long) =
-        satisfyThat("be less than or equal to ${other.literal}") {
-            it <= other
-        }
+public fun Expect<Long>.beGreaterThanOrEqualTo(other: Long): Unit =
+    satisfyThat("be greater than or equal to ${other.literal}") {
+        it >= other
+    }
 
 
-fun Expect<Long>.beBetween(lower: Long, upper: Long) =
-        satisfyThat("be between ${lower.literal} and ${upper.literal}") {
-            it in lower..upper
-        }
+public fun Expect<Long>.beLessThan(other: Long): Unit =
+    satisfyThat("be less than ${other.literal}") {
+        it < other
+    }
 
-fun Expect<Long>.beIn(range: ClosedRange<Long>) =
-        satisfyThat("be in the range of ${range.literal}") {
-            it in range
-        }
+public fun Expect<Long>.beLessThanOrEqualTo(other: Long): Unit =
+    satisfyThat("be less than or equal to ${other.literal}") {
+        it <= other
+    }
+
+
+public fun Expect<Long>.beBetween(lower: Long, upper: Long): Unit =
+    satisfyThat("be between ${lower.literal} and ${upper.literal}") {
+        it in lower..upper
+    }
+
+public fun Expect<Long>.beIn(range: ClosedRange<Long>): Unit =
+    satisfyThat("be in the range of ${range.literal}") {
+        it in range
+    }
 
 

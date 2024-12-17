@@ -43,7 +43,7 @@ java {
 }
 
 kotlin {
-//    explicitApi()
+    explicitApi()
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_11)
         apiVersion.set(KotlinVersion.KOTLIN_1_9)
