@@ -15,8 +15,8 @@ import kotlin.contracts.contract
  * expect exception while executing code block
  */
 @Stability.Stable
-fun expect(block: () -> Unit): ErrorExpectation {
-    return ErrorExpectation(block)
+fun expect(block: () -> Unit): BlockExpectation {
+    return BlockExpectation(block)
 }
 
 /**

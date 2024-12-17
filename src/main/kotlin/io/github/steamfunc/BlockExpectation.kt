@@ -8,17 +8,17 @@ import kotlin.reflect.KClass
 import kotlin.time.toJavaDuration
 
 /**
- * Expectation of error.
+ * Expectation of lambda block.
  *
  * it's catch given block and test the exception.
  *
  * @author Yunsang Choi
  */
-class ErrorExpectation
+class BlockExpectation
 internal constructor(block: () -> Unit) {
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
     private val startedAt = Instant.now()
-    private var finishedAt: Instant
+    private val finishedAt: Instant
 
     // execute and catch
     private val thrown: Throwable? = try {
@@ -91,7 +91,7 @@ internal constructor(block: () -> Unit) {
      * short-cut method.
      *
      */
-    fun throws(clause: (Exception) -> Unit = {}) = apply{
+    fun throws(clause: (Exception) -> Unit = {}) = apply {
         throws(Exception::class, clause)
     }
 
