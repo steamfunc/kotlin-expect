@@ -37,6 +37,7 @@ class DurationExtensionTest {
         59.seconds.should.beLessThan(1.minutes)
         60.seconds.should.not.beLessThan(1.minutes)
         1.minutes.should.not.beLessThan(59.seconds)
+        61.seconds.should.not.beLessThan(1.minutes)
     }
 
     @Test

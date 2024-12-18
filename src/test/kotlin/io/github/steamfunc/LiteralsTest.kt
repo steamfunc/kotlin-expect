@@ -9,55 +9,55 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
-class LiteralizerTest {
+class LiteralsTest {
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @Test
     fun `test for string`() {
-        LiteralConverter.literal("hello")
+        Literals.literal("hello")
             .should.be("\"hello\"")
 
-        LiteralConverter.literal("hello\tworld")
+        Literals.literal("hello\tworld")
             .should.be("\"hello\\tworld\"")
     }
 
     @Test
     fun `test for char`() {
-        LiteralConverter.literal('c')
+        Literals.literal('c')
             .should.be("'c'")
     }
 
     @Test
     fun `test for list`() {
-        LiteralConverter.literal(arrayListOf(1, 2, 3))
+        Literals.literal(arrayListOf(1, 2, 3))
             .should.be("ArrayList(1,2,3)")
-        LiteralConverter.literal(LinkedList<Int>(listOf(1, 2, 3)))
+        Literals.literal(LinkedList<Int>(listOf(1, 2, 3)))
             .should.be("LinkedList(1,2,3)")
     }
 
     @Test
     fun `test for numeric`() {
-        LiteralConverter.literal(1).should.be("1")
-        LiteralConverter.literal(2L).should.be("2L")
-        LiteralConverter.literal(3.1).should.be("3.1")
-        LiteralConverter.literal(4.12f).should.be("4.12f")
+        Literals.literal(1).should.be("1")
+        Literals.literal(2L).should.be("2L")
+        Literals.literal(3.1).should.be("3.1")
+        Literals.literal(4.12f).should.be("4.12f")
     }
 
     @Test
     fun `test for array`() {
-        LiteralConverter.literal(arrayOf(1L, 2L, 3L))
+        Literals.literal(arrayOf(1L, 2L, 3L))
             .should.be("[1L,2L,3L]")
     }
 
     @Test
     fun `test for regex`() {
-        LiteralConverter.literal(Regex("^hello.*!$"))
+        Literals.literal(Regex("^hello.*!$"))
             .should.be("/^hello.*!$/")
     }
 
     @Test
     fun `test for map`() {
-        LiteralConverter.literal(linkedMapOf("KOREA" to "SEOUL", "SPAIN" to "MADRID"))
+        Literals.literal(linkedMapOf("KOREA" to "SEOUL", "SPAIN" to "MADRID"))
             .should.be("LinkedHashMap{\"KOREA\":\"SEOUL\",\"SPAIN\":\"MADRID\"}")
     }
 
@@ -65,15 +65,15 @@ class LiteralizerTest {
     fun `test for throwable`() {
         val aException = NoSuchElementException("it's just test")
 
-        LiteralConverter.literal(aException)
+        Literals.literal(aException)
             .should.be("java.util.NoSuchElementException(message=\"it's just test\")")
     }
 
     @Test
     fun `test for times`() {
-        LiteralConverter.literal(Instant.now()).should.startWith("Instant")
-        LiteralConverter.literal(Date()).should.startWith("Date")
-        LiteralConverter.literal(LocalDateTime.now()).should.startWith("LocalDateTime")
+        Literals.literal(Instant.now()).should.startWith("Instant")
+        Literals.literal(Date()).should.startWith("Date")
+        Literals.literal(LocalDateTime.now()).should.startWith("LocalDateTime")
     }
 
     @Test
@@ -84,7 +84,7 @@ class LiteralizerTest {
             }
         }
 
-        LiteralConverter.literal(MyClass("hello"))
+        Literals.literal(MyClass("hello"))
             .should.be("MyClass<hello>")
 
     }

@@ -97,5 +97,5 @@ internal constructor(block: () -> Unit) {
 
     // Expect class scoped extension (for print object in assertion message)
     internal val <X : Any?> X.literal: String
-        get() = LiteralConverter.literal(this)
+        get() = Literals.literal(this)
 }
