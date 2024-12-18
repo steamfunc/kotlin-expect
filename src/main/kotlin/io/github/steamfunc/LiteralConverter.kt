@@ -15,11 +15,11 @@ import kotlin.reflect.KClass
  *
  * @author Yunsang Choi
  */
-public fun interface Literalizer<T> {
+public fun interface LiteralConverter<T> {
     public fun literal(value: T): String
 
     public companion object Registry {
-        private val list = mutableListOf<TypedLiteralizer<*>>()
+        private val literalConverters = mutableListOf<TypedLiteralizer<*>>()
 
         init {
             // register built-in literalizers.
@@ -57,15 +57,18 @@ public fun interface Literalizer<T> {
         }
 
         public fun literal(value: Any?): String {
+            if (value is StringRepresentable) {
+                return value.toLiteral()
+            }
             return value?.let {
-                list.firstOrNull { it.type.isInstance(value) }
+                literalConverters.firstOrNull { it.type.isInstance(value) }
                     ?.literal(value)
                     ?: it.toString() // no literalizer for given value.
             } ?: "null"
         }
 
-        public fun <T : Any> register(type: KClass<T>, literalizer: Literalizer<T>) {
-            list.add(TypedLiteralizer(type, literalizer))
+        public fun <T : Any> register(type: KClass<T>, converter: LiteralConverter<T>) {
+            literalConverters.add(TypedLiteralizer(type, converter))
         }
 
         public inline fun <reified T : Any> register(crossinline block: (T) -> String) {
@@ -89,12 +92,12 @@ public fun interface Literalizer<T> {
 
         internal class TypedLiteralizer<T : Any>(
             val type: KClass<T>,
-            private val literalizer: Literalizer<T>,
-        ) : Literalizer<Any> {
+            private val converter: LiteralConverter<T>,
+        ) : LiteralConverter<Any> {
             override fun literal(value: Any): String {
                 require(type.isInstance(value)) { "wrong type! : $value" }
                 @Suppress("UNCHECKED_CAST")
-                return literalizer.literal(value as T)
+                return converter.literal(value as T)
             }
         }
     }

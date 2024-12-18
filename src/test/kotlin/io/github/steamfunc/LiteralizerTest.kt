@@ -14,50 +14,50 @@ class LiteralizerTest {
 
     @Test
     fun `test for string`() {
-        Literalizer.literal("hello")
+        LiteralConverter.literal("hello")
             .should.be("\"hello\"")
 
-        Literalizer.literal("hello\tworld")
+        LiteralConverter.literal("hello\tworld")
             .should.be("\"hello\\tworld\"")
     }
 
     @Test
     fun `test for char`() {
-        Literalizer.literal('c')
+        LiteralConverter.literal('c')
             .should.be("'c'")
     }
 
     @Test
     fun `test for list`() {
-        Literalizer.literal(arrayListOf(1, 2, 3))
+        LiteralConverter.literal(arrayListOf(1, 2, 3))
             .should.be("ArrayList(1,2,3)")
-        Literalizer.literal(LinkedList<Int>(listOf(1, 2, 3)))
+        LiteralConverter.literal(LinkedList<Int>(listOf(1, 2, 3)))
             .should.be("LinkedList(1,2,3)")
     }
 
     @Test
     fun `test for numeric`() {
-        Literalizer.literal(1).should.be("1")
-        Literalizer.literal(2L).should.be("2L")
-        Literalizer.literal(3.1).should.be("3.1")
-        Literalizer.literal(4.12f).should.be("4.12f")
+        LiteralConverter.literal(1).should.be("1")
+        LiteralConverter.literal(2L).should.be("2L")
+        LiteralConverter.literal(3.1).should.be("3.1")
+        LiteralConverter.literal(4.12f).should.be("4.12f")
     }
 
     @Test
     fun `test for array`() {
-        Literalizer.literal(arrayOf(1L, 2L, 3L))
+        LiteralConverter.literal(arrayOf(1L, 2L, 3L))
             .should.be("[1L,2L,3L]")
     }
 
     @Test
     fun `test for regex`() {
-        Literalizer.literal(Regex("^hello.*!$"))
+        LiteralConverter.literal(Regex("^hello.*!$"))
             .should.be("/^hello.*!$/")
     }
 
     @Test
     fun `test for map`() {
-        Literalizer.literal(linkedMapOf("KOREA" to "SEOUL", "SPAIN" to "MADRID"))
+        LiteralConverter.literal(linkedMapOf("KOREA" to "SEOUL", "SPAIN" to "MADRID"))
             .should.be("LinkedHashMap{\"KOREA\":\"SEOUL\",\"SPAIN\":\"MADRID\"}")
     }
 
@@ -65,14 +65,27 @@ class LiteralizerTest {
     fun `test for throwable`() {
         val aException = NoSuchElementException("it's just test")
 
-        Literalizer.literal(aException)
+        LiteralConverter.literal(aException)
             .should.be("java.util.NoSuchElementException(message=\"it's just test\")")
     }
 
     @Test
     fun `test for times`() {
-        Literalizer.literal(Instant.now()).should.startWith("Instant")
-        Literalizer.literal(Date()).should.startWith("Date")
-        Literalizer.literal(LocalDateTime.now()).should.startWith("LocalDateTime")
+        LiteralConverter.literal(Instant.now()).should.startWith("Instant")
+        LiteralConverter.literal(Date()).should.startWith("Date")
+        LiteralConverter.literal(LocalDateTime.now()).should.startWith("LocalDateTime")
+    }
+
+    @Test
+    fun `test for StringRepresentable`() {
+        class MyClass(val value: String) : StringRepresentable {
+            override fun toLiteral(): String {
+                return "MyClass<$value>"
+            }
+        }
+
+        LiteralConverter.literal(MyClass("hello"))
+            .should.be("MyClass<hello>")
+
     }
 }

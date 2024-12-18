@@ -94,7 +94,7 @@ internal constructor(
 
     // Expect class scoped extension (for print object in assertion message)
     public val <X : Any?> X.literal: String
-        get() = Literalizer.literal(this)
+        get() = LiteralConverter.literal(this)
 
     @Suppress("POTENTIALLY_NON_REPORTED_ANNOTATION")
     @Deprecated("DO NOT USE")
