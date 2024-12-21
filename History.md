@@ -1,4 +1,4 @@
-## Change History
+## Release Notes
 
 ## 1.4.0
 
