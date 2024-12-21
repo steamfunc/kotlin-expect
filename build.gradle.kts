@@ -26,7 +26,7 @@ fun determineVersion(): String {
     return if (refType == "branch" && refName == "main") {
         baseVersion
     } else {
-        "$baseVersion-SNAPSHOT"
+        "$baseVersion-build${System.getenv("GITHUB_RUN_NUMBER")}" // not support snapshot version neither GithubPackages or MavenCentral
     }
 }
 
@@ -124,8 +124,8 @@ publishing {
             name = "GithubPackages"
             url = uri("https://maven.pkg.github.com/steamfunc/kotlin-expect")
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("github.username") as String
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("github.password") as String
             }
         }
     }
