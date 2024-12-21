@@ -33,6 +33,8 @@ jobs:
       # 4. publish to GitHub Packages
       - name: Publish to GitHub Packages
         env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }} # GPG private key
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }} # GPG passphrase
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }} # given by GitHub
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # given by GitHub
         run: ./gradlew publishToGithub
