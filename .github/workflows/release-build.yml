@@ -1,18 +1,13 @@
-name: CI Build
+name: Release Build
 
 on:
   push:
     branches:
-      - develop
-      - release/*
-  pull_request:
-    branches:
-      - develop
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       # 1. Checkout the code
       - name: Checkout code

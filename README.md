@@ -1,14 +1,15 @@
 # kotlin-expect
+
 [![CI Build](https://github.com/steamfunc/kotlin-expect/actions/workflows/ci-build.yml/badge.svg)](https://github.com/steamfunc/kotlin-expect/actions/workflows/ci-build.yml)
 [![codecov](https://codecov.io/github/steamfunc/kotlin-expect/branch/develop/graph/badge.svg?token=C20OB3IIBC)](https://codecov.io/github/steamfunc/kotlin-expect)
 
-`kotlin-expect` is a assertion library for kotlin test. it's inspried by [Rspec Expectation].
+`kotlin-expect` is a assertion library for kotlin test. it's inspired by [Rspec Expectation].
 
 ## Setup
 
 ```gradle
 dependencies {
-    testCompile("net.oddpoet:kotlin-expect:1.3.2")
+    testCompile("io.github.steamfunc:kotlin-expect:<VERSION>")
 }
 ```
 

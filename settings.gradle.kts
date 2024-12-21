@@ -15,20 +15,16 @@ dependencyResolutionManagement {
     versionCatalogs {
 
         create("libs") {
-            version("kotlin", "1.9.23")
-            version("gradle-nexus-publish-plugin", "1.1.0")
-            version("slf4j", "1.7.36")
-            version("logback", "1.2.11")
-            version("junit5", "5.9.3")
-            version("junit5-platform", "1.9.3")
-            version("jacoco-tool", "0.8.12")
+            version("kotlin", settings.extra["kotlin.version"] as String)
+            version("slf4j", settings.extra["slf4j.version"] as String)
+            version("logback", settings.extra["logback.version"] as String)
+            version("junit5", settings.extra["junit5.version"] as String)
+            version("junit5-platform", settings.extra["junit5.platform.version"] as String)
+            version("jacoco-tool", settings.extra["jacoco.version"] as String)
 
             // plugins
             plugin("kotlin.jvm", "org.jetbrains.kotlin.jvm")
                 .versionRef("kotlin")
-
-            plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin")
-                .versionRef("gradle-nexus-publish-plugin")
 
             // libraries
             library("slf4j-api", "org.slf4j", "slf4j-api")
