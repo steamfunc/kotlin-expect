@@ -3,7 +3,6 @@ name: CI Build
 on:
   push:
     branches:
-      - main
       - develop
   pull_request:
     branches:
@@ -26,20 +25,16 @@ jobs:
           distribution: 'temurin' # JDK distributions (temurin, zulu etc.)
           cache: gradle
 
-      # 3. Cache Gradle dependencies
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
-
-      # 4. Run Gradle build
+      # 3. Run Gradle test
       - name: Run Gradle Build
         run: ./gradlew clean test
+
+      # 4. publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }} # given by GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # given by GitHub
+        run: ./gradlew publish
 
       # 5. Code coverage(Codecov)
       - name: Upload coverage to Codecov
@@ -56,5 +51,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: build/jacoco/coverage
+          name: junit-test-report
+          path: build/reports/tests/test
