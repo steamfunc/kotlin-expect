@@ -121,14 +121,19 @@ expect {
 }
 ```
 
-### `expect { ... }.elapsedWithin()`
+### `expect { ... }.elapsedWithin/elapsedAtMost`
 
-You can assert the execution time of a block using the `expect { ... }.elapsedWithin()` syntax:
+You can assert the execution time of a block using the `expect { ... }.elapsedWithin()` or
+`expect { ... }.elapsedAtMost()` syntax:
 
 ```kotlin
 expect {
     Thread.sleep(100)
 }.elapsedWithin(50.milliseconds, 150.milliseconds) // Must complete within 50ms to 150ms; otherwise, AssertionError.
+
+expect {
+    Thread.sleep(100)
+}.elapsedAtMost(150.milliseconds) // Must complete within 150ms; otherwise, AssertionError.
 ```
 
 ## Custom Assertions

@@ -118,14 +118,18 @@ expect {
 
 ```
 
-### `expect { ... }.elapsedWithin()`
+### `expect { ... }.elapsedWithin/elapseAtMost`
 
-`expect { ... }.elapsedWithin` 형태로 코드 실행시간에 대한 assertion을 작성할 수 있습니다.
+`expect { ... }.elapsedWithin` 혹은 `expect { ... }.elapsedAtMost` 형태로 코드 실행시간에 대한 assertion을 작성할 수 있습니다.
 
 ```kotlin
 expect {
     Thread.sleep(100)
 }.elapsedWithin(50.milliseconds, 150.milliseconds) // 50ms ~ 150ms 사이에 실행되어야 함. 그렇지 않으면 AssertionError 발생.
+
+expect {
+    Thread.sleep(100)
+}.elapsedAtMost(150.milliseconds) // 150ms 이내에 실행되어야 함, 아니면 AssertionError.
 ```
 
 ## 사용자 정의 Assertion

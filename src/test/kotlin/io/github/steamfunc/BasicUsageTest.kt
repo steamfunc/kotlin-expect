@@ -130,6 +130,26 @@ class BasicUsageTest {
     }
 
     @Test
+    fun `test expect {} throws elapsedAtMost`() {
+        expect {
+            Thread.sleep(10)
+            throw IOException()
+        }.throws<IOException>()
+            .elapsedAtMost(20.milliseconds)
+    }
+
+    @Test
+    fun `failing test expect {} throws elapsedAtMost`() {
+        expect {
+            expect {
+                Thread.sleep(10)
+                throw IOException()
+            }.throws<IOException>()
+                .elapsedAtMost(5.milliseconds)
+        }.throws<AssertionError>()
+    }
+
+    @Test
     fun `it should test subject by given predicate`() {
         expect("hello").to.satisfy { length == 5 }
     }
