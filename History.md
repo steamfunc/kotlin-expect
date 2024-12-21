@@ -1,5 +1,19 @@
 ## Change History
 
+## 1.4.0
+
+date: 2024.12.21
+
+- repository moved to `github.com/steamfunc/kotlin-expect`
+- package name changed to `io.github.steamfunc.expect`
+- version changing.
+    - kotlin: 1.9 (target version: 1.9)
+    - jdk: 17 (target version: 11)
+    - gradle: 8.11.1
+- feature: `expect { ... }.elaspedWithin(duration)`
+- feature: add `StringRepresentable` interface for custom literal
+- configure github actions for CI/CD
+
 ## 1.3.2
 
 date: 2024.12.14
