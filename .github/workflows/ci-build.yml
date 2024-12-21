@@ -54,7 +54,7 @@ jobs:
       # 6. HTML reports
       - name: Upload coverage HTML report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: build/jacoco/coverage
