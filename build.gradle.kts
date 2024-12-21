@@ -12,8 +12,19 @@ plugins {
 }
 
 group = "io.github.steamfunc"
-version = findProperty("project.version") as String
+version = determineVersion()
 description = "rspec style assertion library for kotlin test"
+
+fun determineVersion(): String {
+    val baseVersion = findProperty("project.version") as String
+    val refName = System.getenv("GITHUB_REF_NAME")
+    val refType = System.getenv("GITHUB_REF_TYPE")
+    return if (refType == "branch" && refName == "main") {
+        baseVersion
+    } else {
+        "$baseVersion-SNAPSHOT"
+    }
+}
 
 repositories {
     mavenCentral()
@@ -76,16 +87,26 @@ tasks {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/steamfunc/kotlin-expect")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("gpr") {
             from(components["java"])
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
+//            groupId = project.group.toString()
+//            artifactId = project.name
+//            version = project.version.toString()
             pom {
                 name.set(project.name)
                 description.set(project.description)
-                url.set("https://github.com/odd-poet/kotlin-expect")
+                url.set("https://github.com/steamfunc/kotlin-expect")
                 licenses {
                     license {
                         name.set("The Apache Software License, Version 2.0")
@@ -94,26 +115,26 @@ publishing {
                 }
                 developers {
                     developer {
-                        id.set("oddpoet")
+                        id.set("steamfunc")
                         name.set("Yunsang Choi")
-                        email.set("oddpoet@gmail.com")
+                        email.set("code.aznable@gmail.com")
                     }
                 }
                 scm {
-                    url.set("https://github.com/odd-poet/kotlin-expect")
+                    url.set("https://github.com/steamfunc/kotlin-expect")
                 }
             }
         }
     }
 }
 
-nexusPublishing {
-    repositories {
-        sonatype()
-    }
-}
-
-signing {
-    sign(publishing.publications["maven"])
-}
-
+//nexusPublishing {
+//    repositories {
+//        sonatype()
+//    }
+//}
+//
+//signing {
+//    sign(publishing.publications["maven"])
+//}
+//
