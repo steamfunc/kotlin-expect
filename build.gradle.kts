@@ -124,8 +124,8 @@ publishing {
             name = "GithubPackages"
             url = uri("https://maven.pkg.github.com/steamfunc/kotlin-expect")
             credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: (project.findProperty("github.username") as String)
-                password = System.getenv("GITHUB_TOKEN") ?: (project.findProperty("github.password") as String)
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("github.username") as String?
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("github.password") as String?
             }
         }
     }
