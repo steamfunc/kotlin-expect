@@ -26,7 +26,9 @@ fun determineVersion(): String {
     return if (refType == "branch" && refName == "main") {
         baseVersion
     } else {
-        "$baseVersion-build${System.getenv("GITHUB_RUN_NUMBER")}" // not support snapshot version neither GithubPackages or MavenCentral
+        // not support snapshot version neither GithubPackages or MavenCentral
+        // so, use 'SNAPSHOT.<NUM>' as version for GithubPackages
+        "$baseVersion-SNAPSHOT${System.getenv("GITHUB_RUN_NUMBER")?.let { ".$it" } ?: ""}"
     }
 }
 
