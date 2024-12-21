@@ -30,9 +30,18 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }} # given by GitHub
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # given by GitHub
-        run: ./gradlew publish
+        run: ./gradlew publishToGithub
 
-      # 5. Code coverage(Codecov)
+      # 5. publish to Maven Central
+      - name: Publish to Maven Central
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }} # GPG private key
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }} # GPG passphrase
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSS_USERNAME }} # given by Sonatype
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSS_PASSWORD }} # given by Sonatype
+        run: ./gradlew publishToMavenCentral
+
+      # 6. Code coverage(Codecov)
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -42,7 +51,7 @@ jobs:
           flags: unittests
           name: codecov-coverage
 
-      # 6. HTML reports
+      # 7. HTML reports
       - name: Upload coverage HTML report
         if: always()
         uses: actions/upload-artifact@v4

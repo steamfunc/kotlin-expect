@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - release/*
+        - release/*
   pull_request:
     branches:
       - develop
@@ -35,7 +35,7 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }} # given by GitHub
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # given by GitHub
-        run: ./gradlew publish
+        run: ./gradlew publishToGithub
 
       # 5. Code coverage(Codecov)
       - name: Upload coverage to Codecov

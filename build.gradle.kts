@@ -1,18 +1,23 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     `java-library`
-    `maven-publish`
     jacoco
     idea
     signing
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.maven.publish)
 }
 
 group = "io.github.steamfunc"
 version = determineVersion()
 description = "rspec style assertion library for kotlin test"
+
 
 fun determineVersion(): String {
     val baseVersion = findProperty("project.version") as String
@@ -48,8 +53,6 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-    withJavadocJar()
-    withSourcesJar()
 }
 
 kotlin {
@@ -84,7 +87,37 @@ tasks {
         finalizedBy(jacocoTestReport)
     }
 }
+/************************************************************
+ * Publishing configuration
+ ************************************************************/
+// signing configuration
+signing {
+    val signingKey = System.getenv("GPG_PRIVATE_KEY") // for GA
+        ?: project.findProperty("signing.keyFile") // for local (gpg 2.x)
+            ?.let(::file)?.readText()
+    val signingPassword = System.getenv("GPG_PASSPHRASE") // for GA
+        ?: project.findProperty("signing.password") as String? // for local
+    if (signingKey != null && signingPassword != null) {
+        useInMemoryPgpKeys(
+            /* defaultSecretKey = */ signingKey,
+            /* defaultPassword = */ signingPassword
+        )
+    }
+    sign(publishing.publications)
+}
+// for maven central publication
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    configure(KotlinJvm(javadocJar = JavadocJar.Dokka("dokkaHtml"), sourcesJar = true))
+    coordinates(
+        groupId = group.toString(),
+        artifactId = project.name,
+        version = version.toString()
+    )
+    pom { configureDefault() }
+}
 
+// for github package publication (use: maven publication)
 publishing {
     repositories {
         maven {
@@ -96,44 +129,39 @@ publishing {
             }
         }
     }
-    publications {
-        create<MavenPublication>("gpr") {
-            from(components["java"])
-//            groupId = project.group.toString()
-//            artifactId = project.name
-//            version = project.version.toString()
-            pom {
-                name.set(project.name)
-                description.set(project.description)
-                url.set("https://github.com/steamfunc/kotlin-expect")
-                licenses {
-                    license {
-                        name.set("The Apache Software License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("steamfunc")
-                        name.set("Yunsang Choi")
-                        email.set("code.aznable@gmail.com")
-                    }
-                }
-                scm {
-                    url.set("https://github.com/steamfunc/kotlin-expect")
-                }
-            }
+}
+/**
+ * default configuration for maven publication
+ */
+fun MavenPom.configureDefault() {
+    name = project.name
+    description = project.description
+    url = "https://github.com/steamfunc/kotlin-expect"
+    licenses {
+        license {
+            name = "The Apache Software License, Version 2.0"
+            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
         }
+    }
+    developers {
+        developer {
+            id = "steamfunc"
+            name = "Yunsang Choi"
+            email = "code.aznable@gmail.com"
+        }
+    }
+    scm {
+        url = "https://github.com/steamfunc/kotlin-expect"
     }
 }
 
-//nexusPublishing {
-//    repositories {
-//        sonatype()
-//    }
-//}
-//
-//signing {
-//    sign(publishing.publications["maven"])
-//}
-//
+// publish to Github Packages repository (task shortcut)
+tasks.register("publishToGithub") {
+    description = "Publishes the maven publication to Github Packages repository"
+    group = "release"
+    dependsOn("publishMavenPublicationToGithubPackagesRepository")
+}
+// Task: publishToMavenCentral
+// publish to Maven Central repository (task shortcut)
+// already defined in maven-publishing block
+
