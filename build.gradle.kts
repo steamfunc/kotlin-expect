@@ -1,16 +1,29 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
     `java-library`
-    kotlin("jvm")
-    id("maven-publish")
-    id("io.github.gradle-nexus.publish-plugin")
+    `maven-publish`
     jacoco
     idea
     signing
+    alias(libs.plugins.kotlin.jvm)
 }
 
-group = "net.oddpoet"
-version = "1.3.2"
+group = "io.github.steamfunc"
+version = determineVersion()
 description = "rspec style assertion library for kotlin test"
+
+fun determineVersion(): String {
+    val baseVersion = findProperty("project.version") as String
+    val refName = System.getenv("GITHUB_REF_NAME")
+    val refType = System.getenv("GITHUB_REF_TYPE")
+    return if (refType == "branch" && refName == "main") {
+        baseVersion
+    } else {
+        "$baseVersion-SNAPSHOT"
+    }
+}
 
 repositories {
     mavenCentral()
@@ -26,38 +39,30 @@ dependencies {
     testRuntimeOnly(kotlin("reflect"))
     testApi(kotlin("test"))
     testApi(kotlin("test-junit5"))
-    testApi(libs.junit5.api)
+    testApi(libs.junit5.all)
     testApi(libs.junit5.params)
-    testRuntimeOnly(libs.junit5.engine)
+    testRuntimeOnly(libs.junit5.platform.launcher)
     testRuntimeOnly(libs.logback.classic)
 }
 
 java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
 }
 
+kotlin {
+    explicitApi()
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+        apiVersion.set(KotlinVersion.KOTLIN_1_9)
+        languageVersion.set(KotlinVersion.KOTLIN_1_9)
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
+    }
+}
+
 tasks {
-    compileKotlin {
-        kotlinOptions {
-            apiVersion = "1.5"
-            languageVersion = "1.5"
-            jvmTarget = "1.8"
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-    compileTestKotlin {
-        kotlinOptions {
-            apiVersion = "1.5"
-            languageVersion = "1.5"
-            jvmTarget = "1.8"
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-    configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
     test {
         useJUnitPlatform()
         testLogging {
@@ -69,8 +74,10 @@ tasks {
     }
     jacocoTestReport {
         reports {
+            html.required.set(true)
+            html.outputLocation.set(layout.buildDirectory.dir("jacoco/coverage/"))
             xml.required.set(true)
-            xml.outputLocation.set(file("$buildDir/jacoco/report.xml"))
+            xml.outputLocation.set(layout.buildDirectory.file("jacoco/coverage.xml"))
         }
     }
     withType<Test> {
@@ -79,16 +86,26 @@ tasks {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/steamfunc/kotlin-expect")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("gpr") {
             from(components["java"])
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
+//            groupId = project.group.toString()
+//            artifactId = project.name
+//            version = project.version.toString()
             pom {
                 name.set(project.name)
                 description.set(project.description)
-                url.set("https://github.com/odd-poet/kotlin-expect")
+                url.set("https://github.com/steamfunc/kotlin-expect")
                 licenses {
                     license {
                         name.set("The Apache Software License, Version 2.0")
@@ -97,26 +114,26 @@ publishing {
                 }
                 developers {
                     developer {
-                        id.set("oddpoet")
+                        id.set("steamfunc")
                         name.set("Yunsang Choi")
-                        email.set("oddpoet@gmail.com")
+                        email.set("code.aznable@gmail.com")
                     }
                 }
                 scm {
-                    url.set("https://github.com/odd-poet/kotlin-expect")
+                    url.set("https://github.com/steamfunc/kotlin-expect")
                 }
             }
         }
     }
 }
 
-nexusPublishing {
-    repositories {
-        sonatype()
-    }
-}
-
-signing {
-    sign(publishing.publications["maven"])
-}
-
+//nexusPublishing {
+//    repositories {
+//        sonatype()
+//    }
+//}
+//
+//signing {
+//    sign(publishing.publications["maven"])
+//}
+//

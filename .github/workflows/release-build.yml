@@ -1,0 +1,51 @@
+name: Release Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17' # JDK version
+          distribution: 'temurin' # JDK distributions (temurin, zulu etc.)
+          cache: gradle
+
+      # 3. Run Gradle test
+      - name: Run Gradle Build
+        run: ./gradlew clean test
+
+      # 4. publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }} # given by GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # given by GitHub
+        run: ./gradlew publish
+
+      # 5. Code coverage(Codecov)
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          slug: ${{ github.repository }} # GitHub repo
+          files: build/jacoco/coverage.xml # JaCoCo XML path
+          token: ${{ secrets.CODECOV_TOKEN }} # Codecov token (in Codecov Project Settings)
+          flags: unittests
+          name: codecov-coverage
+
+      # 6. HTML reports
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-test-report
+          path: build/reports/tests/test
