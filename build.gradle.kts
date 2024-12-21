@@ -8,7 +8,6 @@ plugins {
     idea
     signing
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.nexus.publish)
 }
 
 group = "io.github.steamfunc"
