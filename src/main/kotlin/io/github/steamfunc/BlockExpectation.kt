@@ -34,6 +34,7 @@ internal constructor(block: () -> Unit) {
 
     public fun elapsedWithin(lower: Duration, upper: Duration): BlockExpectation = apply {
         require(lower <= upper) { "lower bound should be less than or equal to upper bound" }
+        require(lower >= Duration.ZERO) { "lower bound should be greater than or equal to zero" }
         if (elapsedTime.value !in lower..upper) {
             log.debug("elapsed time is {} but expected range is {} ~ {} : FAIL", elapsedTime.value, lower, upper)
             throw AssertionError("elapsed time is ${elapsedTime.value} but expected range is $lower ~ $upper")
@@ -44,7 +45,10 @@ internal constructor(block: () -> Unit) {
         elapsedWithin(range.start, range.endInclusive)
     }
 
-    @JvmName("elapsedWithinKotlinDuration")
+    public fun elapsedAtMost(upper: Duration): BlockExpectation = apply {
+        elapsedWithin(Duration.ZERO, upper)
+    }
+
     public fun elapsedWithin(lower: kotlin.time.Duration, upper: kotlin.time.Duration): BlockExpectation = apply {
         elapsedWithin(lower.toJavaDuration(), upper.toJavaDuration())
     }
@@ -52,6 +56,10 @@ internal constructor(block: () -> Unit) {
     @JvmName("elapsedWithinKotlinDuration")
     public fun elapsedWithin(range: ClosedRange<kotlin.time.Duration>): BlockExpectation = apply {
         elapsedWithin(range.start.toJavaDuration(), range.endInclusive.toJavaDuration())
+    }
+
+    public fun elapsedAtMost(upper: kotlin.time.Duration): BlockExpectation = apply {
+        elapsedWithin(Duration.ZERO, upper.toJavaDuration())
     }
 
     /**

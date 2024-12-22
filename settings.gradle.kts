@@ -16,15 +16,22 @@ dependencyResolutionManagement {
 
         create("libs") {
             version("kotlin", settings.extra["kotlin.version"] as String)
+            version("dokka", settings.extra["dokka.version"] as String)
             version("slf4j", settings.extra["slf4j.version"] as String)
             version("logback", settings.extra["logback.version"] as String)
             version("junit5", settings.extra["junit5.version"] as String)
             version("junit5-platform", settings.extra["junit5.platform.version"] as String)
             version("jacoco-tool", settings.extra["jacoco.version"] as String)
+            version("maven-publish", settings.extra["maven.publish.version"] as String)
 
             // plugins
             plugin("kotlin.jvm", "org.jetbrains.kotlin.jvm")
                 .versionRef("kotlin")
+            plugin("dokka", "org.jetbrains.dokka") // dokka
+                .versionRef("dokka")
+            plugin("maven.publish", "com.vanniktech.maven.publish")
+                .versionRef("maven-publish")
+
 
             // libraries
             library("slf4j-api", "org.slf4j", "slf4j-api")
