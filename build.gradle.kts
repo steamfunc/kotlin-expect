@@ -24,11 +24,18 @@ fun determineVersion(): String {
     val refName = System.getenv("GITHUB_REF_NAME")
     val refType = System.getenv("GITHUB_REF_TYPE")
     return if (refType == "branch" && refName == "main") {
+        // use base version for main branch
+        // it means release version.
         baseVersion
+    } else if (refType == "branch" && refName.startsWith("release/")) {
+        // not support snapshot version neither GithubPackages or MavenCentral
+        // so, use '-RC.<SHA>' as version for GithubPackages
+        val commit = System.getenv("GITHUB_SHA")?.substring(0, 7) ?: "unknown"
+        "$baseVersion-RC.$commit"
     } else {
         // not support snapshot version neither GithubPackages or MavenCentral
-        // so, use 'SNAPSHOT.<NUM>' as version for GithubPackages
-        "$baseVersion-SNAPSHOT${System.getenv("GITHUB_RUN_NUMBER")?.let { ".$it" } ?: ""}"
+        // so, it couldn't be published.
+        "$baseVersion-SNAPSHOT"
     }
 }
 
