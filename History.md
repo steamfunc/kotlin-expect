@@ -1,5 +1,14 @@
 ## Release Notes
 
+## 1.5.0
+
+date: 2024.12.22
+
+- first release version in maven central repository!
+- configure to publish maven central repository
+- configure dokka for documentation
+- feature: `expect { ... }.elaspedAtMost(duration)`
+
 ## 1.4.0
 
 date: 2024.12.21
