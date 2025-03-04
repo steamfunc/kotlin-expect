@@ -1,8 +1,11 @@
 ## Release Notes
 
-## 1.5.1
+## 1.6.0
 
 date: 2025.03.04
+
+- package name changed to `io.github.steamfunc.expect`
+- gradle version up to 8.13
 
 ## 1.5.0
 
