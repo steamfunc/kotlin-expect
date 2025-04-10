@@ -150,6 +150,15 @@ class BasicUsageTest {
     }
 
     @Test
+    fun `test expect { } elapsed without throws`() {
+        expect {
+            expect {
+                throw IOException()
+            }.elapsedAtMost(10.milliseconds)
+        }.throws<AssertionError>()
+    }
+
+    @Test
     fun `it should test subject by given predicate`() {
         expect("hello").to.satisfy { length == 5 }
     }
