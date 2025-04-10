@@ -21,10 +21,13 @@ internal constructor(block: () -> Unit) {
     private val finishedAt: Instant
 
     // execute and catch
+    private var shouldHandleException: Boolean
     private val thrown: Throwable? = try {
         block()
+        shouldHandleException = false // because no exception
         null
     } catch (e: Throwable) {
+        shouldHandleException = true
         e
     } finally {
         finishedAt = Instant.now()
@@ -35,6 +38,9 @@ internal constructor(block: () -> Unit) {
     public fun elapsedWithin(lower: Duration, upper: Duration): BlockExpectation = apply {
         require(lower <= upper) { "lower bound should be less than or equal to upper bound" }
         require(lower >= Duration.ZERO) { "lower bound should be greater than or equal to zero" }
+        if (shouldHandleException) {
+            throw AssertionError("MUST be handled exception before checking elapsed time", thrown)
+        }
         if (elapsedTime.value !in lower..upper) {
             log.debug("elapsed time is {} but expected range is {} ~ {} : FAIL", elapsedTime.value, lower, upper)
             throw AssertionError("elapsed time is ${elapsedTime.value} but expected range is $lower ~ $upper")
@@ -73,6 +79,7 @@ internal constructor(block: () -> Unit) {
         exceptionClass: KClass<out T>,
         clause: (T) -> Unit = {},
     ): BlockExpectation = apply {
+        shouldHandleException = false // mark as handled
         if (thrown == null) {
             log.debug("No exception had been thrown : FAIL")
             throw AssertionError("expected to occur a exception<$exceptionClass> but no exception was thrown.")
