@@ -1,5 +1,12 @@
 ## Release Notes
 
+## 1.6.1
+
+date: 2025.03.04
+
+- fix: `expect { ... }.elaspedWithin(duration)` should throw exception if an exception thrown in the block is not
+  handled with throws()
+
 ## 1.6.0
 
 date: 2025.03.04
